@@ -20,8 +20,6 @@ struct Lexer lexer_constructor() {
 
 int get_tok(struct Lexer *lexer) {
 
-        enum Token token;
-
         while(isspace(lexer->last_character)) {
                 lexer->last_character = getchar();
         }
