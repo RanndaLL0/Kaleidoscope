@@ -1,21 +1,45 @@
-#include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <malloc.h>
 
+#include "utils.h"
 
-/*
- * Esta funcao exige que a memoria seja limpa
- * */
-char *concat_string(char *string, char character) {
+void push(struct vector *self_array, void *item, unsigned int item_size) {
         
-        int len = strlen(string);
+        if (self_array->size >= self_array->capacity) {
 
-        char *new_string = realloc(string, (len + 2) * sizeof(char));
-        if (new_string == NULL) {
-                perror("Erro ao concatenar nova string");
+                int new_capacity = (self_array->capacity == 0) ? 4 : self_array->capacity * 2;
+                void *new_arr = realloc(self_array->arr, new_capacity * item_size);
+                
+                if (new_arr == NULL) {
+                        perror("Erro ao realocar memoria para o vetor");
+                        exit(EXIT_FAILURE);
+                }
+
+                self_array->arr = new_arr;
+                self_array->capacity = new_capacity;
         }
 
-        new_string[len] = character;
-        new_string[len + 1] = '\0';
+        char *destination = (char *)self_array->arr + (self_array->size * item_size);
+        memcpy(destination, item, item_size);
 
-        return new_string;
+        self_array->size++;
+}
+
+struct vector vector_constructor() {
+        
+        struct vector *vec = (struct vector *)malloc(sizeof(struct vector));
+
+        if (vec == NULL) {
+                perror("Erro ao criar novo vetor");
+                exit(EXIT_FAILURE);
+        }
+
+        vec->arr = NULL;
+        vec->capacity = 0;
+        vec->size = 0;
+        vec->push = push;
+
+        return *vec;
 }

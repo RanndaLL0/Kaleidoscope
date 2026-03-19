@@ -8,7 +8,7 @@
                 TOK_IDENTIFIER = -4,
                 TOK_NUMBER = -5,
                 TOK_ANY = -6 
-        };
+        } Token;
 
 
 #endif // !TOKEN_H

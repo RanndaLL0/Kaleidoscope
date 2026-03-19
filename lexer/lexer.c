@@ -1,10 +1,11 @@
 
 #include "lexer.h"
-#include "../utils/utils.h"
 #include "../token/token.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <malloc.h>
 
 #define MAX_ID_LEN 256
 
@@ -17,7 +18,7 @@ struct Lexer lexer_constructor() {
 }
 
 
-Token get_tok(struct Lexer *lexer) {
+int get_tok(struct Lexer *lexer) {
 
         enum Token token;
 
@@ -84,7 +85,7 @@ Token get_tok(struct Lexer *lexer) {
                 } while(lexer->last_character != EOF && lexer->last_character != '\n' && lexer->last_character != '\r');
 
                 if (lexer->last_character != EOF) {
-                        return get_tok();
+                        return get_tok(lexer);
                 }
         } 
 
