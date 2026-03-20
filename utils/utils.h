@@ -2,7 +2,7 @@
 #define UTILS_H
 
         struct vector {
-                void *arr;
+                void **arr;
                 int capacity;
                 int size;
 

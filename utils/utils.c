@@ -43,3 +43,12 @@ struct vector vector_constructor() {
 
         return *vec;
 }
+
+
+void vector_desctructor(struct vector *vec) {
+        
+        for(int i = 0; i < vec->size; i++) {
+                free(vec->arr[i]);
+        }
+        free(vec);
+}
