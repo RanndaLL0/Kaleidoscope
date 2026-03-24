@@ -6,7 +6,8 @@
                 int capacity;
                 int size;
 
-                void (*push)(struct vector *self_vector, void *item, unsigned int item_size);
+                void (* push)(struct vector *self_vector, void *item);
+                void (* vector_destructor)(struct vector *self_vector);
         }; 
 
 

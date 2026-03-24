@@ -12,4 +12,7 @@
 
         struct Lexer lexer_constructor();
 
+
+        int get_tok();
+
 #endif // !LEXER_H

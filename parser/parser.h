@@ -7,14 +7,18 @@
         typedef enum {
                 AST_NUMBER,
                 AST_BINARY,
-                AST_CALL
+                AST_CALL,
+                AST_VARIABLE
         } expr_type;
 
         typedef struct expr_ast{
                 expr_type type;
 
                 union {
-                        
+                       
+                        struct {
+                                char *name;
+                        } variable;
 
                         struct {
                                 double value;
@@ -39,7 +43,7 @@
                 char *function_name;
                 struct vector args;
 
-                void (* free_prototype)(prototype_ast *prototype);
+                void (* free_prototype)(struct prototype_ast *prototype);
         };
 
         struct function_ast {
@@ -53,8 +57,8 @@
 
 
         struct prototype_ast *prototype_ast_constructor(char *name, struct vector args);
-
-
         void free_expr_ast(struct expr_ast *ast);
+
+        int getNextToken(struct Lexer *lexer);
 
 #endif // !PARSER_H
