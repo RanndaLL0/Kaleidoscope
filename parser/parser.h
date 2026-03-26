@@ -3,6 +3,7 @@
 
         #include <stdlib.h>
         #include "../utils/utils.h"
+        #include "../lexer/lexer.h"
 
         typedef enum {
                 AST_NUMBER,
@@ -59,6 +60,6 @@
         struct prototype_ast *prototype_ast_constructor(char *name, struct vector args);
         void free_expr_ast(struct expr_ast *ast);
 
-        int getNextToken(struct Lexer *lexer);
+        int get_next_token(struct Lexer *lexer);
 
 #endif // !PARSER_H

@@ -1,10 +1,7 @@
 #include "parser.h"
-#include "../utils/utils.h"
-#include "../lexer/lexer.h"
-#include <cinttypes>
-#include <cmath>
+#include <complex.h>
 #include <linux/limits.h>
-#include <math.h>
+#include "../token/token.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,7 +40,8 @@ expr_ast *call_constructor_expr_ast(char *call) {
                 perror("Erro ao alocar espaco de memoria para a expressao do tipo call");
                 exit(EXIT_FAILURE);
         }
-
+        
+        new_expr->type = AST_CALL;
         new_expr->as.call.call = call;
         new_expr->as.call.args = vector_constructor();
 
@@ -58,6 +56,7 @@ expr_ast *binary_constructor_expr_ast(char op, expr_ast *left_node, expr_ast *ri
                 perror("Erro ao alocar espaco de memoria para a expressao do tipo operador");
         }
 
+        new_expr->type = AST_BINARY;
         new_expr->as.binary.left_node = left_node;
         new_expr->as.binary.right_node = right_node;
         new_expr->as.binary.op = op;
@@ -89,8 +88,8 @@ void free_expr_ast(expr_ast *ast) {
                 case AST_NUMBER:
                         break;
                 case AST_BINARY:
-                        free(ast->as.binary.left_node);
-                        free(ast->as.binary.right_node);
+                        free_expr_ast(ast->as.binary.left_node);
+                        free_expr_ast(ast->as.binary.right_node);
                         break;
                 case AST_CALL:
                         free(ast->as.call.call);
@@ -101,7 +100,7 @@ void free_expr_ast(expr_ast *ast) {
 }
 
 int get_next_token(struct Lexer *lexer) {
-        return CURRENT_TOKEN = get_next_token(lexer);
+        return CURRENT_TOKEN = get_tok(lexer);
 }
 
 void log_error(char *str) {
@@ -115,24 +114,26 @@ void log_error_p (char *str) {
 }
 
 struct expr_ast *parse_number_expr(struct Lexer *lexer) {
-        
+
         struct expr_ast *result = (struct expr_ast *)malloc(sizeof(struct expr_ast));
-        
+
         if (result == NULL) {
                 return NULL;
         }
 
         result->type = AST_NUMBER;
+        result->as.number.value = lexer->number_value;
+
         get_next_token(lexer);
         return result;
 }
 
 // Consume a expressao ( ... )
 struct expr_ast *parse_paren_expr(struct Lexer *lexer) {
-        
+
         get_next_token(lexer);
-        
-        struct expr_ast *v = parse_expression();
+
+        struct expr_ast *v = parse_expression(lexer);
 
         if (!v) {
                 return NULL;
@@ -149,12 +150,12 @@ struct expr_ast *parse_paren_expr(struct Lexer *lexer) {
 
 
 struct expr_ast *parse_identifier_expr(struct Lexer *lexer) {
-        
+
         char *id_name = lexer->identifier_string;
 
         get_next_token(lexer);
 
-        
+
         if (CURRENT_TOKEN != '(') {
                 struct expr_ast *name_expr = malloc(sizeof(struct expr_ast));
                 name_expr->type = AST_VARIABLE;
@@ -171,7 +172,7 @@ struct expr_ast *parse_identifier_expr(struct Lexer *lexer) {
 
         if (CURRENT_TOKEN != ')') {
                 while (1) {
-                        
+
                         struct expr_ast *arg = parse_expression(lexer);
                         if (!arg) return NULL;
 
@@ -180,7 +181,7 @@ struct expr_ast *parse_identifier_expr(struct Lexer *lexer) {
                         if (CURRENT_TOKEN == ')')
                                 break;
 
-                        if (CURRENT_TOKEN == ',') {}
+                        if (CURRENT_TOKEN != ',') {
                                 log_error("Expected ')' or ',' in argument list");
                                 return NULL;
                         }
@@ -192,5 +193,20 @@ struct expr_ast *parse_identifier_expr(struct Lexer *lexer) {
         get_next_token(lexer);
 
         return call_expr;
+}
+
+struct expr_ast *parse_primary(struct Lexer *lexer) {
+        
+        switch(CURRENT_TOKEN) {
+                case TOK_IDENTIFIER:
+                        return parse_identifier_expr(lexer);
+                case TOK_NUMBER:
+                        return parse_number_expr(lexer);
+                case '(':
+                        return parse_paren_expr(lexer);
+                default:
+                        log_error("Token desconhecido quando se espera uma expressão");
+                        return NULL;
+        }
 }
 

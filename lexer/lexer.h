@@ -7,7 +7,7 @@
                 double number_value;
                 int last_character;
 
-                int (*get_tok)(struct Lexer lexer);
+                int (*get_tok)(struct Lexer *lexer);
         };
 
         struct Lexer lexer_constructor();

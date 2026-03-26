@@ -1,6 +1,9 @@
-CC = clang
+CC = gcc
 
-CFLAGS = -Wall -Wextra -g -I. -Ilexer -Iparser -Itoken -Iutils
+CFLAGS = -Wall -Wextra -g -I. -Ilexer -Iparser -Itoken -Iutils -Iinclude
+
+LDFLAGS = -Llib
+LDLIBS = -ldata_structures
 
 TARGET = kaleidoscope
 
@@ -11,7 +14,7 @@ OBJS = $(SRCS:.c=.o)
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) $(LDLIBS)
 	@echo "Build concluído! Execute com ./$(TARGET)"
 
 %.o: %.c

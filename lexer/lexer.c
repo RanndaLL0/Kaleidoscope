@@ -1,4 +1,3 @@
-
 #include "lexer.h"
 #include "../token/token.h"
 #include <stdio.h>
