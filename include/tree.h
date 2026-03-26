@@ -1,7 +1,7 @@
 #ifndef TREE_H 
 #define TREE_H
 
-#include "../nodes/node.h"
+#include "node.h"
 
 struct binary_search_tree {
 

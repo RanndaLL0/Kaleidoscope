@@ -1,7 +1,7 @@
 #ifndef linked_list_h
 #define linked_list_h
 
-        #include "../nodes/node.h"
+        #include "node.h"
         
         /*
          *The "compare" function will be used to perform 

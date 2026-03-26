@@ -2,8 +2,8 @@
 #define DICT_H
 
         #include "entry.h"
-        #include "../trees/tree.h"
-        #include "../linked_list/linked_list.h"
+        #include "tree.h"
+        #include "linked_list.h"
 
         struct dictionary {
 
